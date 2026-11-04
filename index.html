@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050608">
+<title>KIIBO APP STORE</title>
+
+<style>
+:root {
+  --bg:#050608;
+  --glass:rgba(255,255,255,.055);
+  --border:rgba(255,255,255,.10);
+  --text:#f5f6fa;
+  --muted:#9299a8;
+  --blue:#a8c5ff;
+}
+
+* {box-sizing:border-box}
+
+html {scroll-behavior:smooth}
+
+body {
+  margin:0;
+  background:
+    radial-gradient(ellipse at 15% 0%,#192c4c55,transparent 38%),
+    radial-gradient(ellipse at 90% 25%,#38205233,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+}
+
+a {text-decoration:none;color:inherit}
+
+.container {
+  width:min(1100px,calc(100% - 36px));
+  margin:auto;
+}
+
+header {
+  height:76px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #ffffff10;
+}
+
+.logo {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.logo-icon {
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  color:#090d17;
+  background:linear-gradient(145deg,#fff,#8ca9e8);
+  font-size:21px;
+}
+
+.logo span:last-child {color:var(--blue)}
+
+nav {display:flex;gap:24px;font-size:13px;color:#b5bbc7}
+
+nav a:hover {color:white}
+
+.hero {
+  padding:100px 0 75px;
+  text-align:center;
+}
+
+.eyebrow {
+  display:inline-block;
+  padding:9px 15px;
+  border:1px solid var(--border);
+  border-radius:30px;
+  color:var(--blue);
+  font-size:11px;
+  letter-spacing:2px;
+  background:#ffffff08;
+}
+
+h1 {
+  font-size:clamp(46px,8vw,82px);
+  letter-spacing:-5px;
+  line-height:1;
+  margin:25px 0 18px;
+}
+
+.gradient {
+  background:linear-gradient(100deg,#fff,#a9c7ff,#9b91ff);
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p {
+  max-width:550px;
+  margin:auto;
+  color:var(--muted);
+  line-height:1.8;
+  font-size:15px;
+}
+
+.button {
+  display:inline-block;
+  margin-top:27px;
+  padding:14px 22px;
+  border-radius:13px;
+  font-size:13px;
+  font-weight:800;
+  color:#090d17;
+  background:linear-gradient(135deg,#e6efff,#9ab8ed);
+  transition:.2s;
+}
+
+.button:hover {transform:translateY(-3px)}
+
+.section-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.section-heading h2 {
+  font-size:25px;
+  letter-spacing:-1px;
+}
+
+.section-heading p {
+  color:var(--muted);
+  font-size:13px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+.card {
+  position:relative;
+  overflow:hidden;
+  padding:24px;
+  border:1px solid var(--border);
+  border-radius:23px;
+  background:linear-gradient(145deg,
+    rgba(255,255,255,.09),
+    rgba(255,255,255,.025));
+  box-shadow:
+    inset 0 1px 0 #ffffff12,
+    0 20px 50px #0005;
+  backdrop-filter:blur(20px);
+}
+
+.card:before {
+  content:"";
+  position:absolute;
+  width:200px;
+  height:200px;
+  right:-100px;
+  top:-120px;
+  background:var(--glow);
+  filter:blur(55px);
+  border-radius:50%;
+}
+
+.app-top {
+  display:flex;
+  align-items:center;
+  gap:15px;
+  position:relative;
+}
+
+.app-icon {
+  width:65px;
+  height:65px;
+  flex-shrink:0;
+  border-radius:19px;
+  display:grid;
+  place-items:center;
+  font-size:27px;
+  font-weight:900;
+  color:#101522;
+  background:linear-gradient(145deg,#e9f1ff,#7796d0);
+  box-shadow:0 8px 25px #0007;
+}
+
+.app-icon.purple {
+  background:linear-gradient(145deg,#eee1ff,#9877cb);
+}
+
+.app-name {
+  font-size:20px;
+  font-weight:800;
+}
+
+.category {
+  font-size:12px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.status {
+  margin-left:auto;
+  font-size:10px;
+  padding:7px 10px;
+  border-radius:30px;
+  border:1px solid #a9c7ff33;
+  color:var(--blue);
+  white-space:nowrap;
+}
+
+.description {
+  color:#a9afbb;
+  font-size:13px;
+  line-height:1.7;
+  margin:22px 0;
+}
+
+.tags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-bottom:22px;
+}
+
+.tag {
+  padding:7px 10px;
+  font-size:10px;
+  border-radius:30px;
+  background:#ffffff08;
+  border:1px solid #ffffff10;
+  color:#c5cad4;
+}
+
+.app-footer {
+  padding-top:17px;
+  border-top:1px solid #ffffff12;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.version {
+  color:#858d9b;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.download {
+  padding:12px 15px;
+  border-radius:11px;
+  background:#dce8ff;
+  color:#101522;
+  font-size:12px;
+  font-weight:850;
+}
+
+.download.disabled {
+  opacity:.4;
+  pointer-events:none;
+}
+
+.features {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:65px;
+}
+
+.feature {
+  padding:21px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:#ffffff06;
+}
+
+.feature h3 {font-size:14px}
+
+.feature p {
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.about {
+  margin-top:60px;
+  padding:30px;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:linear-gradient(120deg,#9dbbff13,#ffffff05);
+}
+
+.about p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+}
+
+footer {
+  margin-top:65px;
+  padding:25px 0;
+  border-top:1px solid #ffffff12;
+  display:flex;
+  justify-content:space-between;
+  color:#737b89;
+  font-size:11px;
+}
+
+@media(max-width:650px) {
+  .hero {padding:75px 0 55px}
+  .grid {grid-template-columns:1fr}
+  .features {grid-template-columns:1fr}
+  nav {gap:13px;font-size:11px}
+  .card {padding:19px}
+  .status {font-size:9px}
+  footer {flex-direction:column;gap:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="container">
+  <a class="logo" href="#">
+    <div class="logo-icon">K</div>
+    KIIBO <span>APP STORE</span>
+  </a>
+
+  <nav>
+    <a href="#apps">Applications</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<main class="container">
+
+<section class="hero">
+  <div class="eyebrow">THE KIIBO ECOSYSTEM</div>
+
+  <h1>
+    Discover.<br>
+    <span class="gradient">Experience.</span>
+  </h1>
+
+  <p>
+    Explore applications developed by Kiibo Graphics.
+    Discover new tools, explore features and get the
+    latest releases in one place.
+  </p>
+
+  <a class="button" href="#apps">EXPLORE APPLICATIONS ↓</a>
+</section>
+
+<section id="apps">
+
+  <div class="section-heading">
+    <div>
+      <h2>Our applications</h2>
+      <p>Explore the Kiibo collection.</p>
+    </div>
+    <span style="color:#a9c7ff;font-size:12px">
+      OFFICIAL RELEASES
+    </span>
+  </div>
+
+  <div class="grid">
+
+    <!-- KIIBO FIXTURES -->
+
+    <article class="card" style="--glow:#477ed955">
+
+      <div class="app-top">
+        <div class="app-icon">K</div>
+
+        <div>
+          <div class="app-name">Kiibo Fixtures</div>
+          <div class="category">Sports · Rugby</div>
+        </div>
+
+        <span class="status">COMING SOON</span>
+      </div>
+
+      <p class="description">
+        Your rugby companion. Follow fixtures, match
+        results, league standings, teams and competitions.
+      </p>
+
+      <div class="tags">
+        <span class="tag">Rugby</span>
+        <span class="tag">Fixtures</span>
+        <span class="tag">Android</span>
+      </div>
+
+      <div class="app-footer">
+        <div class="version">
+          Android application<br>
+          Version: Coming soon
+        </div>
+
+        <a class="download disabled" href="#">
+          Coming soon
+        </a>
+      </div>
+
+    </article>
+
+    <!-- GHOSTNET PLAYER -->
+
+    <article class="card" style="--glow:#a16bff55">
+
+      <div class="app-top">
+        <div class="app-icon purple">G</div>
+
+        <div>
+          <div class="app-name">Ghostnet Player</div>
+          <div class="category">Music · Entertainment</div>
+        </div>
+
+        <span class="status">COMING SOON</span>
+      </div>
+
+      <p class="description">
+        A futuristic music player with immersive visuals,
+        audio controls and a premium listening experience.
+      </p>
+
+      <div class="tags">
+        <span class="tag">Music</span>
+        <span class="tag">Audio</span>
+        <span class="tag">Android</span>
+      </div>
+
+      <div class="app-footer">
+        <div class="version">
+          Android application<br>
+          Version: Coming soon
+        </div>
+
+        <a class="download disabled" href="#">
+          Coming soon
+        </a>
+      </div>
+
+    </article>
+
+  </div>
+</section>
+
+<section class="features">
+
+  <div class="feature">
+    <h3>◈ Made by Kiibo</h3>
+    <p>Independent applications created under the Kiibo Graphics identity.</p>
+  </div>
+
+  <div class="feature">
+    <h3>↻ Regular updates</h3>
+    <p>Find release information and new application versions.</p>
+  </div>
+
+  <div class="feature">
+    <h3>↓ Direct downloads</h3>
+    <p>Access official APK downloads when releases become available.</p>
+  </div>
+
+</section>
+
+<section class="about" id="about">
+  <h2>Built by Kiibo Graphics.</h2>
+  <p>
+    KIIBO APP STORE is the central home for our
+    applications and digital projects. More applications
+    will be added as the Kiibo ecosystem grows.
+  </p>
+</section>
+
+</main>
+
+<footer class="container">
+  <span>© <span id="year"></span> KIIBO GRAPHICS</span>
+  <span>KIIBO APP STORE · OFFICIAL</span>
+</footer>
+
+<script>
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+</script>
+
+</body>
+</html>
