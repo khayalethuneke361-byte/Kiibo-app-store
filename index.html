@@ -6,6 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#050608">
 <title>KIIBO APP STORE</title>
+<meta name="description" content="Official apps from Kiibo Graphics. Download Kiibo Fixtures for Android.">
+<link rel="icon" type="image/png" href="assets/icon-fixtures.png">
+<link rel="apple-touch-icon" href="assets/icon-fixtures.png">
 
 <style>
 :root {
@@ -55,22 +58,36 @@ header {
   letter-spacing:2px;
 }
 
-.logo-icon {
-  width:36px;
-  height:36px;
-  display:grid;
-  place-items:center;
-  border-radius:12px;
-  color:#090d17;
-  background:linear-gradient(145deg,#fff,#8ca9e8);
-  font-size:21px;
+.logo-img {
+  height:44px;
+  width:auto;
+  display:block;
+  /* backlight */
+  filter:
+    drop-shadow(0 0 6px rgba(168,197,255,.55))
+    drop-shadow(0 0 18px rgba(120,160,255,.35));
 }
 
 .logo span:last-child {color:var(--blue)}
 
-nav {display:flex;gap:24px;font-size:13px;color:#b5bbc7}
+nav {display:flex;gap:24px;font-size:13px;color:#b5bbc7;align-items:center}
 
 nav a:hover {color:white}
+
+nav a.nav-contact {
+  padding:9px 15px;
+  border-radius:11px;
+  border:1px solid #a9c7ff55;
+  color:var(--blue);
+  font-weight:700;
+  background:#a9c7ff12;
+  transition:.2s;
+}
+
+nav a.nav-contact:hover {
+  color:#090d17;
+  background:var(--blue);
+}
 
 .hero {
   padding:100px 0 75px;
@@ -182,6 +199,7 @@ h1 {
 }
 
 .app-icon {
+  position:relative;
   width:65px;
   height:65px;
   flex-shrink:0;
@@ -195,8 +213,35 @@ h1 {
   box-shadow:0 8px 25px #0007;
 }
 
+/* backlight behind each icon */
+.app-icon:before {
+  content:"";
+  position:absolute;
+  inset:-7px;
+  z-index:-1;
+  border-radius:26px;
+  background:var(--icon-glow,#7796d0);
+  filter:blur(16px);
+  opacity:.75;
+}
+
 .app-icon.purple {
   background:linear-gradient(145deg,#eee1ff,#9877cb);
+  --icon-glow:#a16bff;
+}
+
+.app-icon.has-img {
+  background:none;
+  box-shadow:0 8px 25px #0007;
+  --icon-glow:#ff2a2a;
+}
+
+.app-icon img {
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  border-radius:19px;
 }
 
 .app-name {
@@ -308,6 +353,129 @@ h1 {
   line-height:1.8;
 }
 
+/* ---------- Screenshots ---------- */
+
+.preview {margin-top:65px}
+
+.preview .section-heading {margin-bottom:18px}
+
+.scroll-btns {display:flex;gap:8px}
+
+.scroll-btns button {
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:#ffffff08;
+  color:var(--text);
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.scroll-btns button:hover {background:#ffffff18}
+
+.shots {
+  display:flex;
+  gap:16px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding:6px 2px 18px;
+  scrollbar-width:thin;
+  scrollbar-color:#ffffff25 transparent;
+  -webkit-overflow-scrolling:touch;
+}
+
+.shot {
+  flex:0 0 auto;
+  scroll-snap-align:start;
+  padding:0;
+  border:1px solid var(--border);
+  border-radius:24px;
+  overflow:hidden;
+  background:#0b0d12;
+  cursor:zoom-in;
+  box-shadow:0 20px 50px #0006;
+  transition:transform .2s;
+}
+
+.shot:hover {transform:translateY(-4px)}
+
+.shot img {
+  display:block;
+  height:460px;
+  width:auto;
+}
+
+/* ---------- Lightbox ---------- */
+
+.lightbox {
+  position:fixed;
+  inset:0;
+  z-index:50;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(3,4,6,.92);
+  backdrop-filter:blur(8px);
+  cursor:zoom-out;
+}
+
+.lightbox.open {display:flex}
+
+.lightbox img {
+  max-width:100%;
+  max-height:100%;
+  border-radius:20px;
+  box-shadow:0 30px 80px #000;
+}
+
+.lightbox-close {
+  position:absolute;
+  top:16px;
+  right:18px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:#ffffff12;
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* ---------- Contact ---------- */
+
+.contact {
+  margin-top:24px;
+  padding:30px;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:linear-gradient(120deg,#ffffff08,#9dbbff10);
+}
+
+.contact p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+  max-width:520px;
+}
+
+.contact-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.contact-actions .button {margin-top:12px}
+
+.button.ghost {
+  color:var(--text);
+  background:#ffffff0a;
+  border:1px solid var(--border);
+}
+
 footer {
   margin-top:65px;
   padding:25px 0;
@@ -322,9 +490,14 @@ footer {
   .hero {padding:75px 0 55px}
   .grid {grid-template-columns:1fr}
   .features {grid-template-columns:1fr}
-  nav {gap:13px;font-size:11px}
+  nav {gap:11px;font-size:11px}
+  nav a.nav-contact {padding:8px 11px}
+  .logo {font-size:11px;letter-spacing:1px;gap:8px}
+  .logo-img {height:36px}
   .card {padding:19px}
   .status {font-size:9px}
+  .shot img {height:400px}
+  .scroll-btns {display:none}
   footer {flex-direction:column;gap:12px}
 }
 </style>
@@ -334,13 +507,14 @@ footer {
 
 <header class="container">
   <a class="logo" href="#">
-    <div class="logo-icon">K</div>
+    <img class="logo-img" src="assets/kiibo-logo-white.png" alt="Kiibo Graphics" width="48" height="44">
     KIIBO <span>APP STORE</span>
   </a>
 
   <nav>
     <a href="#apps">Applications</a>
     <a href="#about">About</a>
+    <a class="nav-contact" href="#contact">Contact</a>
   </nav>
 </header>
 
@@ -383,7 +557,9 @@ footer {
 <article class="card" style="--glow:#477ed955">
 
   <div class="app-top">
-    <div class="app-icon">K</div>
+    <div class="app-icon has-img">
+      <img src="assets/icon-fixtures.png" alt="Kiibo Fixtures icon" width="65" height="65">
+    </div>
 
     <div>
       <div class="app-name">Kiibo Fixtures</div>
@@ -463,6 +639,39 @@ footer {
   </div>
 </section>
 
+<section class="preview" id="preview">
+
+  <div class="section-heading">
+    <div>
+      <h2>Kiibo Fixtures in action</h2>
+      <p>Tap a screenshot to view it full size.</p>
+    </div>
+    <div class="scroll-btns">
+      <button type="button" id="shotPrev" aria-label="Previous screenshots">←</button>
+      <button type="button" id="shotNext" aria-label="Next screenshots">→</button>
+    </div>
+  </div>
+
+  <div class="shots" id="shots">
+    <button type="button" class="shot" data-full="assets/shot-1.webp">
+      <img src="assets/shot-1.webp" width="540" height="1200" loading="lazy" alt="Choose a competition: URC, International, Super Rugby and Boland Rugby">
+    </button>
+    <button type="button" class="shot" data-full="assets/shot-2.webp">
+      <img src="assets/shot-2.webp" width="540" height="1157" loading="lazy" alt="Upcoming United Rugby Championship fixtures">
+    </button>
+    <button type="button" class="shot" data-full="assets/shot-3.webp">
+      <img src="assets/shot-3.webp" width="540" height="1151" loading="lazy" alt="United Rugby Championship log standings">
+    </button>
+    <button type="button" class="shot" data-full="assets/shot-4.webp">
+      <img src="assets/shot-4.webp" width="540" height="1156" loading="lazy" alt="Upcoming international rugby fixtures with a live match">
+    </button>
+    <button type="button" class="shot" data-full="assets/shot-5.webp">
+      <img src="assets/shot-5.webp" width="540" height="1164" loading="lazy" alt="Boland club rugby fixtures with kick-off times and venues">
+    </button>
+  </div>
+
+</section>
+
 <section class="features">
 
   <div class="feature">
@@ -491,6 +700,18 @@ footer {
   </p>
 </section>
 
+<section class="contact" id="contact">
+  <h2>Need an app for your company or club?</h2>
+  <p>
+    Kiibo Graphics builds custom apps for companies, clubs and
+    organisations. Send us an email to request an app or ask a question.
+  </p>
+  <div class="contact-actions">
+    <a class="button" href="mailto:kiibographics@gmail.com?subject=App%20request">✉ REQUEST AN APP</a>
+  </div>
+  <p style="margin:14px 0 0;font-size:12px">kiibographics@gmail.com</p>
+</section>
+
 </main>
 
 <footer class="container">
@@ -498,9 +719,37 @@ footer {
   <span>KIIBO APP STORE · OFFICIAL</span>
 </footer>
 
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Screenshot viewer">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+  <img id="lightboxImg" alt="">
+</div>
+
 <script>
 document.getElementById("year").textContent =
   new Date().getFullYear();
+
+// Screenshot strip: arrows
+const strip = document.getElementById("shots");
+const step = () => Math.max(strip.clientWidth * 0.8, 240);
+document.getElementById("shotPrev").onclick = () =>
+  strip.scrollBy({left: -step(), behavior: "smooth"});
+document.getElementById("shotNext").onclick = () =>
+  strip.scrollBy({left: step(), behavior: "smooth"});
+
+// Lightbox
+const box = document.getElementById("lightbox");
+const boxImg = document.getElementById("lightboxImg");
+const closeBox = () => box.classList.remove("open");
+strip.querySelectorAll(".shot").forEach(b => {
+  b.addEventListener("click", () => {
+    const img = b.querySelector("img");
+    boxImg.src = b.dataset.full;
+    boxImg.alt = img.alt;
+    box.classList.add("open");
+  });
+});
+box.addEventListener("click", closeBox);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeBox(); });
 </script>
 
 </body>
