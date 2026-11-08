@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +8,17 @@
 <meta name="description" content="Official apps from Kiibo Graphics. Download Kiibo Fixtures for Android.">
 <link rel="icon" type="image/png" href="assets/icon-fixtures.png">
 <link rel="apple-touch-icon" href="assets/icon-fixtures.png">
+
+<!-- Hides the hero until GSAP has set its start state (no flash). Skipped for reduced motion; 4s failsafe. -->
+<script>
+(function(){
+  var d = document.documentElement;
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    d.classList.add("pre");
+    setTimeout(function(){ d.classList.remove("pre"); }, 4000);
+  }
+})();
+</script>
 
 <style>
 :root {
@@ -26,6 +36,7 @@ html {scroll-behavior:smooth}
 
 body {
   margin:0;
+  overflow-x:clip;
   background:
     radial-gradient(ellipse at 15% 0%,#192c4c55,transparent 38%),
     radial-gradient(ellipse at 90% 25%,#38205233,transparent 35%),
@@ -39,6 +50,56 @@ a {text-decoration:none;color:inherit}
 .container {
   width:min(1100px,calc(100% - 36px));
   margin:auto;
+}
+
+/* ---------- Pre-intro hidden state ---------- */
+
+.pre .eyebrow,
+.pre h1,
+.pre .hero p,
+.pre .hero .button,
+.pre .float,
+.pre .card-wrap,
+.pre .feature {visibility:hidden}
+
+/* ---------- Scroll progress + ambient depth ---------- */
+
+.progress {
+  position:fixed;
+  top:0; left:0; right:0;
+  height:3px;
+  z-index:60;
+  transform-origin:0 50%;
+  transform:scaleX(0);
+  background:linear-gradient(90deg,#a9c7ff,#9b91ff,#ff7ab8);
+  box-shadow:0 0 14px #9b91ff99;
+  pointer-events:none;
+}
+
+.ambient {
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.amb {
+  position:absolute;
+  border-radius:50%;
+  will-change:transform;
+}
+
+.amb.a1 {
+  width:640px; height:640px;
+  left:-200px; top:8%;
+  background:radial-gradient(circle,#2f56b055,transparent 65%);
+}
+
+.amb.a2 {
+  width:600px; height:600px;
+  right:-220px; top:45%;
+  background:radial-gradient(circle,#6a3fc044,transparent 65%);
 }
 
 header {
@@ -81,7 +142,7 @@ nav a.nav-contact {
   color:var(--blue);
   font-weight:700;
   background:#a9c7ff12;
-  transition:.2s;
+  transition:color .2s,background .2s;
 }
 
 nav a.nav-contact:hover {
@@ -89,9 +150,17 @@ nav a.nav-contact:hover {
   background:var(--blue);
 }
 
+/* ---------- Hero ---------- */
+
 .hero {
+  position:relative;
   padding:100px 0 75px;
   text-align:center;
+}
+
+.hero-copy {
+  position:relative;
+  z-index:1;
 }
 
 .eyebrow {
@@ -112,8 +181,13 @@ h1 {
   margin:25px 0 18px;
 }
 
+.h1-line {display:block}
+
+.h1-line2 {display:inline-block}
+
 .gradient {
-  background:linear-gradient(100deg,#fff,#a9c7ff,#9b91ff);
+  background:linear-gradient(100deg,#fff,#a9c7ff,#9b91ff,#a9c7ff,#fff);
+  background-size:200% 100%;
   background-clip:text;
   -webkit-background-clip:text;
   color:transparent;
@@ -136,10 +210,73 @@ h1 {
   font-weight:800;
   color:#090d17;
   background:linear-gradient(135deg,#e6efff,#9ab8ed);
-  transition:.2s;
+  box-shadow:0 10px 30px #7796d033;
 }
 
-.button:hover {transform:translateY(-3px)}
+/* Floating 3D scene behind the headline */
+
+.hero-scene {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+}
+
+.float {position:absolute}
+
+.fm, .fb {width:100%;height:100%}
+
+.f1 {left:3%;  top:10%;    width:100px;height:100px}
+.f2 {right:5%; top:16%;    width:86px; height:86px}
+.f3 {left:12%; bottom:6%;  width:132px;height:132px}
+.f4 {right:11%;bottom:4%;  width:96px; height:96px}
+.f5 {left:30%; top:2%;     width:38px; height:38px}
+.f6 {right:27%;bottom:30%; width:54px; height:54px}
+
+.tile-img {
+  display:block;
+  width:100%;
+  height:100%;
+  border-radius:28px;
+  box-shadow:0 22px 50px #000a,0 0 60px #ff2a2a44;
+}
+
+.purple-tile {
+  display:grid;
+  place-items:center;
+  border-radius:26px;
+  font-size:36px;
+  font-weight:900;
+  color:#101522;
+  background:linear-gradient(145deg,#eee1ff,#9877cb);
+  box-shadow:0 22px 50px #000a,0 0 60px #a16bff55;
+}
+
+.ring {
+  border-radius:50%;
+  border:2px solid #a9c7ff55;
+  box-shadow:inset 0 0 34px #a9c7ff22,0 0 44px #a9c7ff22;
+}
+
+.sphere {
+  border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,#fffc,#a9c7ffaa 28%,#4a6fbf66 62%,#0b1226 100%);
+  box-shadow:0 24px 50px #0009,0 0 50px #7796d055;
+}
+
+.sphere.violet {
+  background:radial-gradient(circle at 32% 28%,#fffb,#c3a4ffaa 28%,#6a45b566 62%,#150b26 100%);
+  box-shadow:0 24px 50px #0009,0 0 50px #a16bff44;
+}
+
+.glass-tile {
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:linear-gradient(145deg,#ffffff24,#ffffff08);
+  box-shadow:inset 0 1px 0 #ffffff22,0 18px 40px #0007;
+}
+
+/* ---------- Sections ---------- */
 
 .section-heading {
   display:flex;
@@ -166,7 +303,7 @@ h1 {
 
 .card {
   position:relative;
-  overflow:hidden;
+  height:100%;
   padding:24px;
   border:1px solid var(--border);
   border-radius:23px;
@@ -176,11 +313,25 @@ h1 {
   box-shadow:
     inset 0 1px 0 #ffffff12,
     0 20px 50px #0005;
-  backdrop-filter:blur(20px);
+  transform-style:preserve-3d;
 }
 
-.card:before {
-  content:"";
+.card > :not(.card-clip) {
+  position:relative;
+  z-index:1;
+}
+
+/* clips the glow + glare to the rounded card, so the card itself can stay 3D */
+.card-clip {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  border-radius:inherit;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+.card-glow {
   position:absolute;
   width:200px;
   height:200px;
@@ -191,6 +342,13 @@ h1 {
   border-radius:50%;
 }
 
+.card-glare {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.16),transparent 60%);
+}
+
 .app-top {
   display:flex;
   align-items:center;
@@ -198,11 +356,38 @@ h1 {
   position:relative;
 }
 
+/* ---------- Layered 3D app icon ---------- */
+
 .app-icon {
   position:relative;
   width:65px;
   height:65px;
   flex-shrink:0;
+  perspective:500px;
+  --icon-glow:#7796d0;
+}
+
+.app-icon.purple {--icon-glow:#a16bff}
+.app-icon.has-img {--icon-glow:#ff2a2a}
+
+.icon-tilt {
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+}
+
+.icon-glow {
+  position:absolute;
+  inset:-7px;
+  border-radius:26px;
+  background:var(--icon-glow);
+  filter:blur(16px);
+  opacity:.75;
+}
+
+.icon-face {
+  position:absolute;
+  inset:0;
   border-radius:19px;
   display:grid;
   place-items:center;
@@ -213,35 +398,30 @@ h1 {
   box-shadow:0 8px 25px #0007;
 }
 
-/* backlight behind each icon */
-.app-icon:before {
-  content:"";
-  position:absolute;
-  inset:-7px;
-  z-index:-1;
-  border-radius:26px;
-  background:var(--icon-glow,#7796d0);
-  filter:blur(16px);
-  opacity:.75;
-}
-
-.app-icon.purple {
+.app-icon.purple .icon-face {
   background:linear-gradient(145deg,#eee1ff,#9877cb);
-  --icon-glow:#a16bff;
 }
 
-.app-icon.has-img {
+.app-icon.has-img .icon-face {
   background:none;
-  box-shadow:0 8px 25px #0007;
-  --icon-glow:#ff2a2a;
 }
 
-.app-icon img {
+.icon-face img {
   width:100%;
   height:100%;
   display:block;
   object-fit:cover;
   border-radius:19px;
+}
+
+.icon-shine {
+  position:absolute;
+  inset:0;
+  border-radius:19px;
+  pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%);
+  background-size:300% 100%;
+  background-position:0% 0%;
 }
 
 .app-name {
@@ -304,6 +484,7 @@ h1 {
 }
 
 .download {
+  display:inline-block;
   padding:12px 15px;
   border-radius:11px;
   background:#dce8ff;
@@ -357,7 +538,7 @@ h1 {
 
 .preview {margin-top:65px}
 
-.preview .section-heading {margin-bottom:18px}
+.preview .section-heading {margin-bottom:6px}
 
 .scroll-btns {display:flex;gap:8px}
 
@@ -370,17 +551,18 @@ h1 {
   color:var(--text);
   font-size:16px;
   cursor:pointer;
-  transition:.2s;
+  transition:background .2s;
 }
 
 .scroll-btns button:hover {background:#ffffff18}
 
 .shots {
   display:flex;
-  gap:16px;
+  gap:18px;
   overflow-x:auto;
   scroll-snap-type:x mandatory;
-  padding:6px 2px 18px;
+  scroll-padding-left:18px;
+  padding:26px 18px 38px;
   scrollbar-width:thin;
   scrollbar-color:#ffffff25 transparent;
   -webkit-overflow-scrolling:touch;
@@ -396,10 +578,8 @@ h1 {
   background:#0b0d12;
   cursor:zoom-in;
   box-shadow:0 20px 50px #0006;
-  transition:transform .2s;
+  will-change:transform;
 }
-
-.shot:hover {transform:translateY(-4px)}
 
 .shot img {
   display:block;
@@ -412,7 +592,7 @@ h1 {
 .lightbox {
   position:fixed;
   inset:0;
-  z-index:50;
+  z-index:70;
   display:none;
   align-items:center;
   justify-content:center;
@@ -486,6 +666,17 @@ footer {
   font-size:11px;
 }
 
+@media(max-width:900px) {
+  .float {opacity:.5}
+  .f1 {left:-1%;top:4%;width:70px;height:70px}
+  .f2 {right:-1%;top:8%;width:60px;height:60px}
+  .f3 {left:-3%;bottom:2%;width:90px;height:90px}
+  .f4 {right:-2%;bottom:0;width:70px;height:70px}
+  .f5 {left:22%;top:0}
+  .f6 {right:18%;bottom:26%}
+  .purple-tile {font-size:26px}
+}
+
 @media(max-width:650px) {
   .hero {padding:75px 0 55px}
   .grid {grid-template-columns:1fr}
@@ -505,6 +696,13 @@ footer {
 
 <body>
 
+<div class="progress" id="progress"></div>
+
+<div class="ambient" aria-hidden="true">
+  <i class="amb a1"></i>
+  <i class="amb a2"></i>
+</div>
+
 <header class="container">
   <a class="logo" href="#">
     <img class="logo-img" src="assets/kiibo-logo-white.png" alt="Kiibo Graphics" width="48" height="44">
@@ -521,20 +719,33 @@ footer {
 <main class="container">
 
 <section class="hero">
-  <div class="eyebrow">THE KIIBO ECOSYSTEM</div>
 
-  <h1>
-    Discover.<br>
-    <span class="gradient">Experience.</span>
-  </h1>
+  <!-- floating 3D scene: .float = scroll parallax, .fm = mouse parallax, .fb = idle drift -->
+  <div class="hero-scene" aria-hidden="true">
+    <div class="float f1" data-depth="1"   data-speed="1.0"><div class="fm"><div class="fb"><img class="tile-img" src="assets/icon-fixtures.png" alt=""></div></div></div>
+    <div class="float f2" data-depth=".75" data-speed=".6"><div class="fm"><div class="fb purple-tile">G</div></div></div>
+    <div class="float f3" data-depth=".5"  data-speed=".4"><div class="fm"><div class="fb ring"></div></div></div>
+    <div class="float f4" data-depth="1.2" data-speed=".8"><div class="fm"><div class="fb sphere"></div></div></div>
+    <div class="float f5" data-depth="1.5" data-speed="1.3"><div class="fm"><div class="fb sphere violet"></div></div></div>
+    <div class="float f6" data-depth=".9"  data-speed=".7"><div class="fm"><div class="fb glass-tile"></div></div></div>
+  </div>
 
-  <p>
-    Explore applications developed by Kiibo Graphics.
-    Discover new tools, explore features and get the
-    latest releases in one place.
-  </p>
+  <div class="hero-copy">
+    <div class="eyebrow">THE KIIBO ECOSYSTEM</div>
 
-  <a class="button" href="#apps">EXPLORE APPLICATIONS ↓</a>
+    <h1>
+      <span class="h1-line" id="h1a">Discover.</span>
+      <span class="gradient h1-line2">Experience.</span>
+    </h1>
+
+    <p>
+      Explore applications developed by Kiibo Graphics.
+      Discover new tools, explore features and get the
+      latest releases in one place.
+    </p>
+
+    <a class="button" href="#apps">EXPLORE APPLICATIONS ↓</a>
+  </div>
 </section>
 
 <section id="apps">
@@ -551,14 +762,23 @@ footer {
 
   <div class="grid">
 
-  
 <!-- KIIBO FIXTURES -->
 
+<div class="card-wrap">
 <article class="card" style="--glow:#477ed955">
 
-  <div class="app-top">
+  <div class="card-clip">
+    <div class="card-glow"></div>
+    <div class="card-glare"></div>
+  </div>
+
+  <div class="app-top" data-z="34">
     <div class="app-icon has-img">
-      <img src="assets/icon-fixtures.png" alt="Kiibo Fixtures icon" width="65" height="65">
+      <div class="icon-tilt">
+        <span class="icon-glow"></span>
+        <span class="icon-face"><img src="assets/icon-fixtures.png" alt="Kiibo Fixtures icon" width="65" height="65"></span>
+        <span class="icon-shine"></span>
+      </div>
     </div>
 
     <div>
@@ -571,18 +791,18 @@ footer {
     </span>
   </div>
 
-  <p class="description">
+  <p class="description" data-z="14">
     Your rugby companion. Follow fixtures, match
     results, league standings, teams and competitions.
   </p>
 
-  <div class="tags">
+  <div class="tags" data-z="22">
     <span class="tag">Rugby</span>
     <span class="tag">Fixtures</span>
     <span class="tag">Android</span>
   </div>
 
-  <div class="app-footer">
+  <div class="app-footer" data-z="30">
     <div class="version">
       Android application<br>
       Version: 1.2.0
@@ -595,46 +815,59 @@ footer {
   </div>
 
 </article>
+</div>
 
+<!-- GHOSTNET PLAYER -->
 
-    <!-- GHOSTNET PLAYER -->
+<div class="card-wrap">
+<article class="card" style="--glow:#a16bff55">
 
-    <article class="card" style="--glow:#a16bff55">
+  <div class="card-clip">
+    <div class="card-glow"></div>
+    <div class="card-glare"></div>
+  </div>
 
-      <div class="app-top">
-        <div class="app-icon purple">G</div>
-
-        <div>
-          <div class="app-name">Ghostnet Player</div>
-          <div class="category">Music · Entertainment</div>
-        </div>
-
-        <span class="status">COMING SOON</span>
+  <div class="app-top" data-z="34">
+    <div class="app-icon purple">
+      <div class="icon-tilt">
+        <span class="icon-glow"></span>
+        <span class="icon-face">G</span>
+        <span class="icon-shine"></span>
       </div>
+    </div>
 
-      <p class="description">
-        A futuristic music player with immersive visuals,
-        audio controls and a premium listening experience.
-      </p>
+    <div>
+      <div class="app-name">Ghostnet Player</div>
+      <div class="category">Music · Entertainment</div>
+    </div>
 
-      <div class="tags">
-        <span class="tag">Music</span>
-        <span class="tag">Audio</span>
-        <span class="tag">Android</span>
-      </div>
+    <span class="status">COMING SOON</span>
+  </div>
 
-      <div class="app-footer">
-        <div class="version">
-          Android application<br>
-          Version: Coming soon
-        </div>
+  <p class="description" data-z="14">
+    A futuristic music player with immersive visuals,
+    audio controls and a premium listening experience.
+  </p>
 
-        <a class="download disabled" href="#">
-          Coming soon
-        </a>
-      </div>
+  <div class="tags" data-z="22">
+    <span class="tag">Music</span>
+    <span class="tag">Audio</span>
+    <span class="tag">Android</span>
+  </div>
 
-    </article>
+  <div class="app-footer" data-z="30">
+    <div class="version">
+      Android application<br>
+      Version: Coming soon
+    </div>
+
+    <a class="download disabled" href="#">
+      Coming soon
+    </a>
+  </div>
+
+</article>
+</div>
 
   </div>
 </section>
@@ -724,11 +957,20 @@ footer {
   <img id="lightboxImg" alt="">
 </div>
 
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/SplitText.min.js"></script>
+
 <script>
 document.getElementById("year").textContent =
   new Date().getFullYear();
 
-// Screenshot strip: arrows
+const html = document.documentElement;
+const reduceNow = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasGSAP = !!(window.gsap && window.ScrollTrigger && window.SplitText);
+
+/* ================= Screenshot strip: arrows ================= */
+
 const strip = document.getElementById("shots");
 const step = () => Math.max(strip.clientWidth * 0.8, 240);
 document.getElementById("shotPrev").onclick = () =>
@@ -736,20 +978,400 @@ document.getElementById("shotPrev").onclick = () =>
 document.getElementById("shotNext").onclick = () =>
   strip.scrollBy({left: step(), behavior: "smooth"});
 
-// Lightbox
+/* ================= Lightbox ================= */
+
 const box = document.getElementById("lightbox");
 const boxImg = document.getElementById("lightboxImg");
-const closeBox = () => box.classList.remove("open");
+
+function openBox(src, alt) {
+  boxImg.src = src;
+  boxImg.alt = alt;
+  box.classList.add("open");
+  if (hasGSAP && !reduceNow()) {
+    gsap.fromTo(box, {opacity: 0}, {opacity: 1, duration: .35, ease: "power2.out"});
+    gsap.fromTo(boxImg,
+      {scale: .6, rotationX: 28, rotationY: -18, y: 60, opacity: 0, transformPerspective: 1200},
+      {scale: 1, rotationX: 0, rotationY: 0, y: 0, opacity: 1, duration: .85, ease: "expo.out"});
+  }
+}
+
+function closeBox() {
+  if (!box.classList.contains("open")) return;
+  if (!hasGSAP || reduceNow()) { box.classList.remove("open"); return; }
+  gsap.to(boxImg, {scale: .85, rotationX: -12, opacity: 0, duration: .25, ease: "power2.in", overwrite: true});
+  gsap.to(box, {
+    opacity: 0, duration: .3, overwrite: true,
+    onComplete: () => {
+      box.classList.remove("open");
+      gsap.set([box, boxImg], {clearProps: "all"});
+    }
+  });
+}
+
 strip.querySelectorAll(".shot").forEach(b => {
   b.addEventListener("click", () => {
     const img = b.querySelector("img");
-    boxImg.src = b.dataset.full;
-    boxImg.alt = img.alt;
-    box.classList.add("open");
+    openBox(b.dataset.full, img.alt);
   });
 });
 box.addEventListener("click", closeBox);
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeBox(); });
+
+/* ================= GSAP: 3D motion ================= */
+
+if (!hasGSAP) {
+  html.classList.remove("pre");
+} else {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  ScrollTrigger.config({ignoreMobileResize: true});
+
+  const clamp = gsap.utils.clamp;
+  const toArray = gsap.utils.toArray;
+  const random = gsap.utils.random;
+  const mm = gsap.matchMedia();
+
+  mm.add("(prefers-reduced-motion: reduce)", () => {
+    html.classList.remove("pre");
+  });
+
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+
+    const cleanups = [];
+    const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    const wraps    = toArray(".card-wrap");
+    const features = toArray(".feature");
+    const floats   = toArray(".float");
+    const shots    = toArray(".shot");
+
+    /* ---------- 1. Intro: one orchestrated 3D entrance ---------- */
+
+    const h1Split = SplitText.create("#h1a", {type: "chars"});
+
+    const intro = gsap.timeline({defaults: {ease: "power3.out"}});
+
+    intro
+      .from(".eyebrow", {y: -30, opacity: 0, rotationX: -70, transformPerspective: 600, duration: .8})
+      .from(h1Split.chars, {
+        opacity: 0, rotationX: -100, y: 60, z: -120,
+        transformPerspective: 700, transformOrigin: "50% 100% -30px",
+        stagger: .045, duration: 1, ease: "back.out(1.6)"
+      }, "-=.5")
+      .from(".h1-line2", {
+        opacity: 0, rotationX: -90, y: 70,
+        transformPerspective: 700, transformOrigin: "50% 100%",
+        duration: 1.1, ease: "back.out(1.4)"
+      }, "-=.75")
+      .from(".hero p", {y: 30, opacity: 0, duration: .9}, "-=.6")
+      .from(".hero .button", {y: 30, scale: .8, opacity: 0, duration: .8, ease: "back.out(2)"}, "-=.6")
+      .from(floats, {
+        scale: 0, opacity: 0,
+        stagger: .1, duration: 1.2, ease: "back.out(1.7)"
+      }, "-=1.1");
+
+    // hero start-states are now set, so reveal the hero
+    html.classList.remove("pre");
+
+    // gradient shimmer on "Experience."
+    gsap.fromTo(".h1-line2",
+      {backgroundPosition: "0% 0%"},
+      {backgroundPosition: "100% 0%", duration: 4.5, ease: "sine.inOut", yoyo: true, repeat: -1});
+
+    /* ---------- 2. Hero scene: idle drift + scroll depth ---------- */
+
+    floats.forEach((el, i) => {
+      const fb = el.querySelector(".fb");
+      gsap.set(fb, {transformPerspective: 800});
+      gsap.to(fb, {
+        y: "+=" + random(10, 20),
+        rotationZ: random(-8, 8),
+        rotationY: random(-22, 22),
+        rotationX: random(-12, 12),
+        duration: random(3, 5),
+        yoyo: true, repeat: -1, ease: "sine.inOut",
+        delay: i * .2
+      });
+
+      gsap.to(el, {
+        y: -(parseFloat(el.dataset.speed) || .5) * 300,
+        ease: "none",
+        scrollTrigger: {trigger: ".hero", start: "top top", end: "bottom top", scrub: 1}
+      });
+    });
+
+    // hero copy tips back and fades as you scroll past
+    gsap.to(".hero-copy", {
+      y: -110, rotationX: 16, scale: .94, opacity: .15,
+      transformPerspective: 900, transformOrigin: "50% 100%",
+      ease: "none",
+      scrollTrigger: {trigger: ".hero", start: "top top", end: "bottom top", scrub: .6}
+    });
+
+    /* ---------- 3. Page-wide: progress bar + ambient depth ---------- */
+
+    gsap.to("#progress", {
+      scaleX: 1, ease: "none",
+      scrollTrigger: {start: 0, end: "max", scrub: .25}
+    });
+
+    gsap.to(".amb.a1", {
+      y: 420, x: 90, ease: "none",
+      scrollTrigger: {start: 0, end: "max", scrub: 1.2}
+    });
+    gsap.to(".amb.a2", {
+      y: -380, x: -80, ease: "none",
+      scrollTrigger: {start: 0, end: "max", scrub: 1.2}
+    });
+
+    /* ---------- 4. Headings: words flip up in 3D ---------- */
+
+    toArray(".section-heading h2, .about h2, .contact h2").forEach(h => {
+      const s = SplitText.create(h, {type: "words"});
+      gsap.from(s.words, {
+        opacity: 0, rotationX: -90, y: 30,
+        transformPerspective: 700, transformOrigin: "50% 100% -20px",
+        stagger: .07, duration: .9, ease: "back.out(1.7)",
+        scrollTrigger: {trigger: h, start: "top 88%", toggleActions: "play none none reverse"}
+      });
+    });
+
+    toArray(".section-heading").forEach(sh => {
+      gsap.from(toArray("p", sh), {
+        y: 16, opacity: 0, duration: .8, delay: .25,
+        scrollTrigger: {trigger: sh, start: "top 88%", toggleActions: "play none none reverse"}
+      });
+    });
+
+    /* ---------- 5. App cards + icons ---------- */
+
+    wraps.forEach((wrap, i) => {
+      const card  = wrap.querySelector(".card");
+      const icon  = wrap.querySelector(".app-icon");
+      const tiltE = wrap.querySelector(".icon-tilt");
+      const glow  = wrap.querySelector(".icon-glow");
+      const shine = wrap.querySelector(".icon-shine");
+      const blob  = wrap.querySelector(".card-glow");
+      const side  = i % 2 === 0 ? -1 : 1;
+
+      // scroll-scrubbed 3D arrival: tips up out of the distance
+      gsap.fromTo(wrap,
+        {rotationX: 28, rotationY: side * 14, x: side * 60, y: 110, z: -220, scale: .9, opacity: 0,
+         transformPerspective: 1000, transformOrigin: "50% 100%"},
+        {rotationX: 0, rotationY: 0, x: 0, y: 0, z: 0, scale: 1, opacity: 1, ease: "none",
+         scrollTrigger: {trigger: wrap, start: "top 98%", end: "top 55%", scrub: .8}});
+
+      // the icon spins in as the card lands
+      gsap.set(icon, {transformPerspective: 600});
+      gsap.fromTo(icon,
+        {rotationY: -80, scale: .4},
+        {rotationY: 0, scale: 1, ease: "power2.out",
+         scrollTrigger: {trigger: wrap, start: "top 92%", end: "top 50%", scrub: .8}});
+
+      // idle float
+      gsap.to(icon, {y: -5, duration: 2.2 + i * .5, yoyo: true, repeat: -1, ease: "sine.inOut"});
+
+      // icon layers sit at different depths
+      gsap.set(glow, {z: -18});
+      gsap.set(shine, {z: 6});
+      gsap.to(glow, {scale: 1.3, opacity: .4, duration: 2.2, yoyo: true, repeat: -1, ease: "sine.inOut", delay: i * .6});
+
+      // icon drifts against the scroll (parallax)
+      gsap.fromTo(tiltE,
+        {y: 18},
+        {y: -18, ease: "none",
+         scrollTrigger: {trigger: wrap, start: "top bottom", end: "bottom top", scrub: .6}});
+
+      // light sweep across the icon
+      gsap.fromTo(shine,
+        {backgroundPosition: "0% 0%"},
+        {backgroundPosition: "100% 0%", duration: 1.3, ease: "power2.inOut",
+         repeat: -1, repeatDelay: 3.4, delay: 1.5 + i * 1.2});
+
+      // glow blob slides behind the card as you scroll
+      gsap.fromTo(blob,
+        {y: -30, x: 20},
+        {y: 50, x: -20, ease: "none",
+         scrollTrigger: {trigger: wrap, start: "top bottom", end: "bottom top", scrub: true}});
+    });
+
+    /* ---------- 6. Scroll-velocity skew: things lean into the scroll ---------- */
+
+    const skewCards = wraps.map(w => gsap.quickTo(w, "skewY", {duration: .6, ease: "power3"}));
+    const skewIcons = toArray(".app-icon").map(el => gsap.quickTo(el, "skewY", {duration: .6, ease: "power3"}));
+
+    ScrollTrigger.create({
+      onUpdate: self => {
+        const v = self.getVelocity();
+        const c = clamp(-2, 2, v / -600);
+        const n = clamp(-10, 10, v / -250);
+        skewCards.forEach(f => f(c));
+        skewIcons.forEach(f => f(n));
+      }
+    });
+    const settle = () => { skewCards.forEach(f => f(0)); skewIcons.forEach(f => f(0)); };
+    ScrollTrigger.addEventListener("scrollEnd", settle);
+    cleanups.push(() => ScrollTrigger.removeEventListener("scrollEnd", settle));
+
+    /* ---------- 7. Screenshots: 3D reveal + coverflow ---------- */
+
+    gsap.set(shots, {transformPerspective: 900});
+
+    gsap.from(shots, {
+      y: 100, opacity: 0, rotationX: 30,
+      stagger: .09, duration: 1, ease: "power3.out",
+      scrollTrigger: {trigger: ".preview", start: "top 80%", toggleActions: "play none none reverse"}
+    });
+
+    let flowRaf = 0;
+    const flow = () => {
+      flowRaf = 0;
+      const sr = strip.getBoundingClientRect();
+      const mid = sr.left + sr.width / 2;
+      shots.forEach(s => {
+        const r = s.getBoundingClientRect();
+        const o = clamp(-1.2, 1.2, ((r.left + r.width / 2) - mid) / sr.width * 1.6);
+        gsap.set(s, {rotationY: -o * 38, z: -Math.abs(o) * 90, scale: 1 - Math.abs(o) * .07});
+      });
+    };
+    const queueFlow = () => { if (!flowRaf) flowRaf = requestAnimationFrame(flow); };
+
+    strip.addEventListener("scroll", queueFlow, {passive: true});
+    window.addEventListener("resize", queueFlow);
+    window.addEventListener("load", queueFlow);
+    queueFlow();
+    cleanups.push(() => {
+      strip.removeEventListener("scroll", queueFlow);
+      window.removeEventListener("resize", queueFlow);
+      window.removeEventListener("load", queueFlow);
+      cancelAnimationFrame(flowRaf);
+      gsap.set(shots, {clearProps: "transform"});
+    });
+
+    /* ---------- 8. Features, About, Contact ---------- */
+
+    gsap.from(features, {
+      rotationY: i => (i - 1) * 45, y: 70, z: -150, opacity: 0,
+      transformPerspective: 900,
+      stagger: .12, duration: 1, ease: "power3.out",
+      scrollTrigger: {trigger: ".features", start: "top 88%", toggleActions: "play none none reverse"}
+    });
+
+    ["about", "contact"].forEach(cls => {
+      gsap.fromTo("." + cls,
+        {rotationX: 18, y: 70, scale: .96, opacity: 0, transformPerspective: 1000, transformOrigin: "50% 100%"},
+        {rotationX: 0, y: 0, scale: 1, opacity: 1, ease: "none",
+         scrollTrigger: {trigger: "." + cls, start: "top 98%", end: "top 62%", scrub: .8}});
+    });
+
+    gsap.from("footer", {
+      y: 30, opacity: 0, duration: .9,
+      scrollTrigger: {trigger: "footer", start: "top 100%"}
+    });
+
+    /* ---------- 9. Pointer-driven 3D (mouse devices only) ---------- */
+
+    if (fine) {
+
+      // cards tilt toward the cursor; content layers pop forward; the icon turns to look at you
+      wraps.forEach(wrap => {
+        const card   = wrap.querySelector(".card");
+        const glare  = wrap.querySelector(".card-glare");
+        const tiltE  = wrap.querySelector(".icon-tilt");
+        const layers = toArray("[data-z]", card);
+
+        gsap.set(card, {transformPerspective: 1100});
+
+        const rx = gsap.quickTo(card, "rotationX", {duration: .5, ease: "power3"});
+        const ry = gsap.quickTo(card, "rotationY", {duration: .5, ease: "power3"});
+        const ix = gsap.quickTo(tiltE, "rotationX", {duration: .4, ease: "power3"});
+        const iy = gsap.quickTo(tiltE, "rotationY", {duration: .4, ease: "power3"});
+
+        card.addEventListener("pointerenter", () => {
+          gsap.to(glare, {opacity: 1, duration: .3});
+          gsap.to(layers, {z: (i, t) => +t.dataset.z, duration: .6, ease: "power3.out"});
+        });
+
+        card.addEventListener("pointermove", e => {
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          ry((px - .5) * 14);
+          rx(-(py - .5) * 14);
+          glare.style.setProperty("--mx", (px * 100) + "%");
+          glare.style.setProperty("--my", (py * 100) + "%");
+
+          const ir = tiltE.getBoundingClientRect();
+          const dx = clamp(-1, 1, (e.clientX - (ir.left + ir.width / 2)) / 180);
+          const dy = clamp(-1, 1, (e.clientY - (ir.top + ir.height / 2)) / 120);
+          iy(dx * 32);
+          ix(-dy * 32);
+        });
+
+        card.addEventListener("pointerleave", () => {
+          gsap.to(glare, {opacity: 0, duration: .4});
+          gsap.to(layers, {z: 0, duration: .6, ease: "power3.out"});
+          gsap.to(card,  {rotationX: 0, rotationY: 0, duration: 1.2, ease: "elastic.out(1,.6)", overwrite: "auto"});
+          gsap.to(tiltE, {rotationX: 0, rotationY: 0, duration: 1.2, ease: "elastic.out(1,.5)", overwrite: "auto"});
+        });
+      });
+
+      // feature tiles tilt gently
+      features.forEach(f => {
+        const rx = gsap.quickTo(f, "rotationX", {duration: .5, ease: "power3"});
+        const ry = gsap.quickTo(f, "rotationY", {duration: .5, ease: "power3"});
+        f.addEventListener("pointermove", e => {
+          const r = f.getBoundingClientRect();
+          ry(((e.clientX - r.left) / r.width - .5) * 12);
+          rx(-((e.clientY - r.top) / r.height - .5) * 12);
+        });
+        f.addEventListener("pointerleave", () =>
+          gsap.to(f, {rotationX: 0, rotationY: 0, duration: 1, ease: "elastic.out(1,.6)", overwrite: "auto"}));
+      });
+
+      // screenshots lift on hover
+      shots.forEach(s => {
+        s.addEventListener("pointerenter", () => gsap.to(s, {y: -10, duration: .4, ease: "power3.out"}));
+        s.addEventListener("pointerleave", () => gsap.to(s, {y: 0, duration: .6, ease: "power3.out"}));
+      });
+
+      // magnetic buttons
+      toArray(".button, .download:not(.disabled)").forEach(b => {
+        const mx = gsap.quickTo(b, "x", {duration: .6, ease: "power3"});
+        const my = gsap.quickTo(b, "y", {duration: .6, ease: "power3"});
+        b.addEventListener("pointerenter", () => gsap.to(b, {scale: 1.06, duration: .3}));
+        b.addEventListener("pointermove", e => {
+          const r = b.getBoundingClientRect();
+          mx((e.clientX - (r.left + r.width / 2)) * .3);
+          my((e.clientY - (r.top + r.height / 2)) * .4);
+        });
+        b.addEventListener("pointerleave", () => {
+          gsap.to(b, {x: 0, y: 0, scale: 1, duration: 1, ease: "elastic.out(1,.5)", overwrite: "auto"});
+        });
+      });
+
+      // hero scene follows the mouse at different depths
+      const movers = floats.map(el => ({
+        d: parseFloat(el.dataset.depth) || 1,
+        x: gsap.quickTo(el.querySelector(".fm"), "x", {duration: 1.1, ease: "power3"}),
+        y: gsap.quickTo(el.querySelector(".fm"), "y", {duration: 1.1, ease: "power3"})
+      }));
+      const copyRY = gsap.quickTo(".hero-copy", "rotationY", {duration: 1, ease: "power3"});
+
+      const onMove = e => {
+        const nx = (e.clientX / innerWidth - .5) * 2;
+        const ny = (e.clientY / innerHeight - .5) * 2;
+        movers.forEach(m => { m.x(-nx * m.d * 38); m.y(-ny * m.d * 26); });
+        copyRY(nx * 5);
+      };
+      window.addEventListener("pointermove", onMove);
+      cleanups.push(() => window.removeEventListener("pointermove", onMove));
+    }
+
+    return () => cleanups.forEach(fn => fn());
+  });
+
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+}
 </script>
 
 </body>
